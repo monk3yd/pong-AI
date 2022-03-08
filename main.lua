@@ -96,6 +96,10 @@ function love.load()
     -- place a ball in the middle of the screen
     ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 
+    -- Default state of AI - # TODO
+    state_AI = 'ON'
+
+
     -- initialize score variables
     player1Score = 0
     player2Score = 0
@@ -144,6 +148,9 @@ function love.update(dt)
         else
             ball.dx = -math.random(140, 200)
         end
+        
+
+
     elseif gameState == 'play' then
         -- detect ball collision with paddles, reversing dx if true and
         -- slightly increasing it, then altering the dy based on the position
@@ -233,6 +240,7 @@ function love.update(dt)
     -- paddles can move no matter what state we're in
     --
     -- player 1
+    player_1_ai = false
     if love.keyboard.isDown('w') then
         player1.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
@@ -241,13 +249,24 @@ function love.update(dt)
         player1.dy = 0
     end
 
-    -- TODO player 2 - 
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.dy = PADDLE_SPEED
+    -- player 2
+    player_2_ai = true
+    if player_2_ai then
+    -- # TODO AI Player 2 Movement
+        if player2.y > ball.y - 4 then
+            player2.dy = -PADDLE_SPEED
+        elseif player2.y < ball.y - 4 then 
+            player2.dy = PADDLE_SPEED
+        end
+
     else
-        player2.dy = 0
+        if love.keyboard.isDown('up') then
+            player2.dy = -PADDLE_SPEED
+        elseif love.keyboard.isDown('down') then
+            player2.dy = PADDLE_SPEED
+        else
+            player2.dy = 0
+        end
     end
 
     -- update our ball based on its DX and DY only if we're in play state;
@@ -342,6 +361,9 @@ function love.draw()
     -- display FPS for debugging; simply comment out to remove
     displayFPS()
 
+    -- display AI state on/off
+    displayAIstate()
+
     -- end our drawing to push
     push:apply('end')
 end
@@ -366,4 +388,11 @@ function displayFPS()
     love.graphics.setFont(smallFont)
     love.graphics.setColor(0, 1, 0, 1)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+end
+
+function displayAIstate()
+    -- display if AI is on or off
+    love.graphics.setFont(smallFont)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print('AI: ' .. state_AI, VIRTUAL_WIDTH - 50, 10)
 end
