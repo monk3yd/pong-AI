@@ -96,8 +96,8 @@ function love.load()
     -- place a ball in the middle of the screen
     ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 
-    -- Default state of AI - # TODO
-    state_AI = 'ON'
+    -- # Default state of AI
+    player2_AI = 'ON'
 
 
     -- initialize score variables
@@ -149,9 +149,8 @@ function love.update(dt)
             ball.dx = -math.random(140, 200)
         end
         
-
-
     elseif gameState == 'play' then
+        -- # TODO - Increase Ball Spd or Decrease players speed with every bounce
         -- detect ball collision with paddles, reversing dx if true and
         -- slightly increasing it, then altering the dy based on the position
         -- at which it collided, then playing a sound effect
@@ -236,11 +235,19 @@ function love.update(dt)
         end
     end
 
+    -- Check for key press that turn off AI
+    if love.keyboard.isDown('m') then
+        if player2_AI == "ON" then
+            player2_AI = "OFF"
+        else
+            player2_AI = "ON"
+        end
+    end
+
     --
     -- paddles can move no matter what state we're in
     --
     -- player 1
-    player_1_ai = false
     if love.keyboard.isDown('w') then
         player1.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
@@ -250,9 +257,8 @@ function love.update(dt)
     end
 
     -- player 2
-    player_2_ai = true
-    if player_2_ai then
-    -- # TODO AI Player 2 Movement
+    if player2_AI == 'ON' then
+    -- # AI Player2 Movement
         if player2.y > ball.y - 4 then
             player2.dy = -PADDLE_SPEED
         elseif player2.y < ball.y - 4 then 
@@ -394,5 +400,5 @@ function displayAIstate()
     -- display if AI is on or off
     love.graphics.setFont(smallFont)
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print('AI: ' .. state_AI, VIRTUAL_WIDTH - 50, 10)
+    love.graphics.print('AI: ' .. player2_AI, VIRTUAL_WIDTH - 50, 10)
 end
